@@ -10,4 +10,4 @@ Match all 16 cards to win.
 
 ## Contributing
 
-This repository is in the process of being reviewed for completion credit as part of the Front End Web Developer Nanodegree Program. Therefore, I most likely will not accept pull requests until I have received instructor feedback and complete this project.
+This repository is in the process of being reviewed for completion credit as part of the Udacity Front End Web Developer Nanodegree Program. Therefore, I most likely will not accept pull requests until I have received instructor feedback and complete this project.
