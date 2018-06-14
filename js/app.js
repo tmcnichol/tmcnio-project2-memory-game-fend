@@ -1,17 +1,15 @@
-/*
- * Create a list that holds all of your cards
- */
-const deckList = document.getElementsByClassName('card');
-const cardList = [];
-const movesDisplay = document.querySelector('.moves');
-const starsDisplay = document.querySelector('.stars');
-let starsList = starsDisplay.getElementsByClassName('fa');
-let matchList = document.getElementsByClassName('match');
-let starCounter = document.getElementsByClassName('fa-star').length;
-let numberOfMoves = 0;
-
-let m = 0;
-let s = 0;
+// Main Game Variables
+const deckList = document.getElementsByClassName('card');//list of cards
+const cardList = [];// var for setCardList() function child with classes used to compare cards for match
+const movesDisplay = document.querySelector('.moves');//var for # of moves live & modal display
+const starsLiParent = document.querySelector('.stars');//var to target stars <ul>
+let starsList = starsLiParent.getElementsByClassName('fa'); //var to control # of star displayed live
+let matchList = document.getElementsByClassName('match'); //var to determine if game finished
+let starCounter = document.getElementsByClassName('fa-star').length; // var to display star score on modal
+let openedCards; //variable to store and compare cards
+let numberOfMoves = 0;//var to count # of moves
+let m = 0; // minutes variable
+let s = 0; // seconds variable
 
 // Modal Variables:
 const modal = document.getElementsByClassName('modal')[0];
@@ -34,6 +32,7 @@ function closeModal() {
 	console.log('closed modal');
 }
 
+//Function to reduce number of stars showing as the # of moves increases
 function finalScore() {
 	document.getElementsByClassName('stats-stars')[0].textContent = starCounter + " of 5";
 	document.getElementsByClassName('stats-moves')[0].textContent = numberOfMoves;
@@ -56,9 +55,6 @@ function initializeGame () {
 			deckList[i].className = "card";
 	window.addEventListener('click', finalScore);
 	playAgainBtn.addEventListener('click', resetBoard);
-
-
-//'Click' event listener for each card
 	}
 }
 
@@ -66,15 +62,16 @@ function doShuffle() {
 	shuffle(cardList);
 	for (let i = 0; i < deckList.length; i++) {
 	deckList[i].getElementsByClassName('fa')[0].className = cardList[i];
-}
+  }
 }
 
 function resetBoard () {
 	// reset scoring
 	// reset card eventlisteners and card UI (initial css classes)
-	initializeGame();
 	// shuffle (ie calling shuffle function and assign cards to HTML)
-	doShuffle();
+  //close modal
+	initializeGame();
+  doShuffle();
 	resetStars();
 	closeModal();
 }
@@ -95,8 +92,6 @@ function shuffle(array) {
 		return array;
 }
 
-let openedCards; //variable to store and compare cards
-
 function openCard(evt) {
 	evt.target.classList.add('show', 'open');
 	evt.target.removeEventListener('click', clicked);
@@ -110,7 +105,6 @@ function matchCard(evt) {
 }
 
 function movesCounter () {
-
 	numberOfMoves++;
 	movesDisplay.textContent = numberOfMoves;
 	starRating();
@@ -118,14 +112,14 @@ function movesCounter () {
 
 function starRating() {
 	if (numberOfMoves == 20) {
-		starsDisplay.getElementsByTagName('i')[0].className = "fa";
+		starsLiParent.getElementsByTagName('i')[0].className = "fa";
 		console.log('lost one star');
 	} else if (numberOfMoves == 28) {
-		starsDisplay.getElementsByTagName('i')[1].className = "fa";
+		starsLiParent.getElementsByTagName('i')[1].className = "fa";
 	}	else if (numberOfMoves == 38) {
-		starsDisplay.getElementsByTagName('i')[2].className = "fa";
+		starsLiParent.getElementsByTagName('i')[2].className = "fa";
 	} else if (numberOfMoves == 48) {
-		starsDisplay.getElementsByTagName('i')[3].className = "fa";
+		starsLiParent.getElementsByTagName('i')[3].className = "fa";
 	}
 }
 
