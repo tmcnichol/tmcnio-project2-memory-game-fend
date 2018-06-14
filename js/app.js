@@ -1,9 +1,10 @@
 // Main Game Variables
+const theDeck = document.getElementsByClassName('deck')[0];
 const deckList = document.getElementsByClassName('card');//list of cards
 const cardList = [];// var for setCardList() function child with classes used to compare cards for match
 const movesDisplay = document.querySelector('.moves');//var for # of moves live & modal display
 const starsLiParent = document.querySelector('.stars');//var to target stars <ul>
-const timerVar = setInterval(startTimer, 1000);
+//const timerVar = setInterval(startTimer, 1000);
 let starsList = starsLiParent.getElementsByClassName('fa'); //var to control # of star displayed live
 let matchList = document.getElementsByClassName('match'); //var to determine if game finished
 let starCounter = document.getElementsByClassName('fa-star').length; // var to display star score on modal
@@ -28,7 +29,7 @@ function initializeGame () {
 	starRating();
 	numberOfMoves = 0;
 	movesDisplay.textContent = numberOfMoves;
-	for (let i = 0; i < deckList.length; i++) {
+  for (let i = 0; i < deckList.length; i++) {
 			deckList[i].addEventListener('click', movesCounter);
 			deckList[i].addEventListener('click', clicked);
 			deckList[i].className = "card";
@@ -75,6 +76,7 @@ function resetBoard () {
   doShuffle();
 	resetStars();
 	closeModal();
+  resetTimer();
 }
 
 function openCard(evt) {
@@ -134,7 +136,8 @@ function resetStars() {
 }
 
 function startTimer() {
-		s++;
+    setInterval( function() {
+    s++;
 		if (s == 60) {
 			m++;
 			s = 00;
@@ -143,16 +146,17 @@ function startTimer() {
 			document.getElementsByClassName('timer')[0].textContent = m +':0'+ s;
 		}	else {
 			document.getElementsByClassName('timer')[0].textContent = m +':'+ s;}
-		}
+		}, 1000);
+    theDeck.removeEventListener('click', startTimer);
+    console.log('boom');
+  }
+
+theDeck.addEventListener('click', startTimer);
 
 function resetTimer() {
 	m = 0;
 	s = -1;
-	startTimer();
 }
-
-
-
 
 function openModal() {
 		modal.style.display = 'block';
