@@ -4,6 +4,9 @@ const deckList = document.getElementsByClassName('card');//list of cards
 const cardList = [];// var for setCardList() function child with classes used to compare cards for match
 const movesDisplay = document.querySelector('.moves');//var for # of moves live & modal display
 const starsLiParent = document.querySelector('.stars');//var to target stars <ul>
+const restartBtn = document.getElementsByClassName('restart')[0];//var to target restart button for event listener
+const timerDisplay = document.getElementsByClassName('timer')[0]//var to target timer display
+
 let starsList = starsLiParent.getElementsByClassName('fa'); //var to control # of star displayed live
 let matchList = document.getElementsByClassName('match'); //var to determine if game finished
 let starCounter = document.getElementsByClassName('fa-star').length; // var to display star score on modal
@@ -17,14 +20,16 @@ const modal = document.getElementsByClassName('modal')[0];
 const closeBtn = document.getElementsByClassName('close-button')[0];
 const playAgainBtn = document.getElementsByClassName('play-again-button')[0];
 
-document.getElementsByClassName('restart')[0].addEventListener('click', resetBoard); //Event listener to startover
-
 initializeGame();
 setCardList();
 doShuffle();
 
 function initializeGame () {
  // initialize eventListerners
+  window.addEventListener('click', showFinalScore);
+  playAgainBtn.addEventListener('click', resetBoard);
+  closeBtn.addEventListener('click', closeModal);
+  restartBtn.addEventListener('click', resetBoard);
   starRating();
 	numberOfMoves = 0;
 	movesDisplay.textContent = numberOfMoves;
@@ -32,15 +37,13 @@ function initializeGame () {
 			deckList[i].addEventListener('click', movesCounter);
 			deckList[i].addEventListener('click', clicked);
 			deckList[i].className = "card";
-	window.addEventListener('click', finalScore);
-	playAgainBtn.addEventListener('click', resetBoard);
-  closeBtn.addEventListener('click', closeModal);
 	}
 }
 
 function setCardList (){
-for (let i = 0; i < deckList.length; i++) {	cardList.push(deckList[i].getElementsByClassName('fa')[0].className);
-	}
+  for (let i = 0; i < deckList.length; i++) {
+    cardList.push(deckList[i].getElementsByClassName('fa')[0].className);
+  }
 }
 //[0] will return a DOM element for the <i> within the <li> and pushing the className
 
@@ -61,24 +64,18 @@ function shuffle(array) {
 }
 
 function doShuffle() {
-	shuffle(cardList);
-	for (let i = 0; i < deckList.length; i++) {
-	deckList[i].getElementsByClassName('fa')[0].className = cardList[i];
-  }
+  	shuffle(cardList);
+  	for (let i = 0; i < deckList.length; i++) {
+      deckList[i].getElementsByClassName('fa')[0].className = cardList[i];
+    }
 }
 
 function resetBoard () {
-	// reset scoring
-	// reset card eventlisteners and card UI (initial css classes)
-	// shuffle (ie calling shuffle function and assign cards to HTML)
-  //close modal
-	initializeGame();
-  doShuffle();
-	resetStars();
-	closeModal();
-  clearTimer();
-
-
+  	initializeGame();
+    doShuffle();
+  	resetStars();
+  	closeModal();
+    clearTimer();
 }
 
 var timer = setInterval(advanceTimer, 1000);
@@ -91,81 +88,83 @@ function advanceTimer() {
 			s = 00;
 		}
 		if (s < 10) {
-			document.getElementsByClassName('timer')[0].textContent = m +':0'+ s;
+			timerDisplay.textContent = m +':0'+ s;
 		}	else {
-			document.getElementsByClassName('timer')[0].textContent = m +':'+ s;
+			timerDisplay.textContent = m +':'+ s;
     }
   }
 
 function clearTimer() {
-  clearInterval(timer);
-  s = -1;
-  m = 0;
-  timer = setInterval(advanceTimer, 1000);
+    clearInterval(timer);
+    s = 0;
+    m = 0;
+    timer = setInterval(advanceTimer, 1000);
 }
 
 function startTimer() {
-  timer = setInterval(advanceTimer, 1000);
-  advanceTimer();
-  theDeck.removeEventListener('click', startTimer);
+    timer = setInterval(advanceTimer, 1000);
+    advanceTimer();
+    theDeck.removeEventListener('click', startTimer);
 }
 
 theDeck.addEventListener('click', startTimer);
 
 function openCard(evt) {
-	evt.target.classList.add('show', 'open');
-	evt.target.removeEventListener('click', clicked);
+  	evt.target.classList.add('show', 'open');
+  	evt.target.removeEventListener('click', clicked);
 }
 
 function matchCard(evt) {
-	openedCards.classList.remove('show', 'open');
-	openedCards.classList.add('match');
-	evt.target.classList.add('match');
-	evt.target.removeEventListener('click', clicked);
+  	openedCards.classList.remove('show', 'open');
+  	openedCards.classList.add('match');
+  	evt.target.classList.add('match');
+  	evt.target.removeEventListener('click', clicked);
 }
 
-function clicked(evt){  //function to execute for 'click' event listener
-	let cardClicked = evt.target;
-	if (openedCards == null) {
-		openCard(evt);
-		openedCards = evt.target;
-	} else if (evt.target.innerHTML == openedCards.innerHTML) {
-			matchCard(evt);
-			openedCards = null;
-		} else {
-			evt.target.classList.add('show', 'open');
-			setTimeout(function () {
-				openedCards.classList.remove('show', 'open');
-				openedCards.addEventListener('click', clicked);
-				cardClicked.classList.remove('show', 'open');
-				cardClicked.addEventListener('click', clicked);
-				openedCards = null;}, 300);
-		}
+function clicked(evt){  //function for event listener to flip and compare cards
+
+  let cardClicked = evt.target;
+
+	if (openedCards == null) { //show 1st of two cards for match
+  		openCard(evt);
+  		openedCards = evt.target;
+	} else if (evt.target.innerHTML == openedCards.innerHTML) {    //if 2nd is match, show, set and lock both cards as match
+  			matchCard(evt);
+  			openedCards = null;
+		} else { // if 2nd card not match, show both cards for a moment, then hide 1st and 2nd card
+  			evt.target.classList.add('show', 'open');
+  			setTimeout(function () {
+  				openedCards.classList.remove('show', 'open');
+  				openedCards.addEventListener('click', clicked);
+  				cardClicked.classList.remove('show', 'open');
+  				cardClicked.addEventListener('click', clicked);
+  				openedCards = null;}, 300);
+		  }
 }
 
 function movesCounter () {
-	numberOfMoves++;
-	movesDisplay.textContent = numberOfMoves;
-	starRating();
+  	numberOfMoves++;
+  	movesDisplay.textContent = numberOfMoves;
+  	starRating();
 }
 
 //Function to reduce number of stars showing as the # of moves increases
 function starRating() {
-	if (numberOfMoves == 20) {
-		starsLiParent.getElementsByTagName('i')[0].className = "fa";
-	} else if (numberOfMoves == 28) {
-		starsLiParent.getElementsByTagName('i')[1].className = "fa";
-	}	else if (numberOfMoves == 38) {
-		starsLiParent.getElementsByTagName('i')[2].className = "fa";
-	} else if (numberOfMoves == 48) {
-		starsLiParent.getElementsByTagName('i')[3].className = "fa";
-	}
+  	if (numberOfMoves == 20) {
+  		starsLiParent.getElementsByTagName('i')[0].className = "fa";
+  	} else if (numberOfMoves == 28) {
+  		starsLiParent.getElementsByTagName('i')[1].className = "fa";
+  	}	else if (numberOfMoves == 38) {
+  		starsLiParent.getElementsByTagName('i')[2].className = "fa";
+  	} else if (numberOfMoves == 48) {
+  		starsLiParent.getElementsByTagName('i')[3].className = "fa";
+  	}
 }
 
 function resetStars() {
-	for (let i = 0; i < starsList.length; i++) {
-			starsList[i].classList.add('fa-star');
-		}
+  	for (let i = 0; i < starsList.length; i++) {
+  			starsList[i].classList.add('fa-star');
+  		}
 }
 
 function openModal() {
@@ -173,15 +172,15 @@ function openModal() {
 }
 
 function closeModal() {
-	modal.style.display = 'none';
+	  modal.style.display = 'none';
 }
 
-//Function to display all finals scores on modal
-function finalScore() {
-	document.getElementsByClassName('stats-stars')[0].textContent = starCounter + " of 5";
-	document.getElementsByClassName('stats-moves')[0].textContent = numberOfMoves;
-	document.getElementsByClassName('stats-time')[0].textContent = m +' m '+ s +' s';
-	if (matchList.length == 16) {
-		openModal();
-	}
+//Function to display finals scores modal after player wins
+function showFinalScore() {
+  	document.getElementsByClassName('stats-stars')[0].textContent = starCounter + " of 5";
+  	document.getElementsByClassName('stats-moves')[0].textContent = numberOfMoves;
+  	document.getElementsByClassName('stats-time')[0].textContent = m +' m '+ s +' s';
+  	if (matchList.length == 16) {
+  		openModal();
+  	}
 }
