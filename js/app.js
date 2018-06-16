@@ -9,7 +9,7 @@ const timerDisplay = document.getElementsByClassName('timer')[0]//var to target 
 
 let starsList = starsLiParent.getElementsByClassName('fa'); //var to control # of star displayed live
 let matchList = document.getElementsByClassName('match'); //var to determine if game finished
-let starCounter = document.getElementsByClassName('fa-star').length; // var to display star score on modal
+let starCounter = 5; // var to display star score on modal
 let openedCards; //variable to store and compare cards
 let numberOfMoves = 0;//var to count # of moves
 let m = 0; // minutes variable
@@ -158,12 +158,16 @@ function movesCounter (evt) {
 function starRating() {
   	if (numberOfMoves == 20) {
   		starsLiParent.getElementsByTagName('i')[0].className = "fa";
+      starCounter--;
   	} else if (numberOfMoves == 28) {
   		starsLiParent.getElementsByTagName('i')[1].className = "fa";
+      starCounter--;
   	}	else if (numberOfMoves == 38) {
   		starsLiParent.getElementsByTagName('i')[2].className = "fa";
+      starCounter--;
   	} else if (numberOfMoves == 48) {
   		starsLiParent.getElementsByTagName('i')[3].className = "fa";
+      starCounter--;
   	}
 }
 
@@ -179,6 +183,7 @@ function openModal() {
 
 function closeModal() {
 	  modal.style.display = 'none';
+    initializeGame();
 }
 
 //Function to display finals scores modal after player wins
