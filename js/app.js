@@ -143,10 +143,15 @@ function clicked(evt){  //function for event listener to flip and compare cards
 		  }
 }
 
-function movesCounter () {
-  	numberOfMoves++;
-  	movesDisplay.textContent = numberOfMoves;
-  	starRating();
+function movesCounter (evt) {
+
+    let cardClicked = evt.target;
+
+    if (cardClicked.className == 'card') {
+      numberOfMoves++;
+    	movesDisplay.textContent = numberOfMoves;
+    	starRating();
+    }
 }
 
 //Function to reduce number of stars showing as the # of moves increases
