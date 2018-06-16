@@ -36,6 +36,7 @@ function initializeGame () {
   for (let i = 0; i < deckList.length; i++) {
 			deckList[i].addEventListener('click', movesCounter);
 			deckList[i].addEventListener('click', clicked);
+      deckList[i].addEventListener('click', movesCounter);
 			deckList[i].className = "card";
 	}
 }
@@ -127,12 +128,12 @@ function clicked(evt){  //function for event listener to flip and compare cards
 
 	if (openedCards == null) { //show 1st of two cards for match
   		openCard(evt);
-  		openedCards = evt.target;
-	} else if (evt.target.innerHTML == openedCards.innerHTML) {    //if 2nd is match, show, set and lock both cards as match
+  		openedCards = cardClicked;
+	} else if (cardClicked.innerHTML == openedCards.innerHTML) {    //if 2nd is match, show, set and lock both cards as match
   			matchCard(evt);
   			openedCards = null;
 		} else { // if 2nd card not match, show both cards for a moment, then hide 1st and 2nd card
-  			evt.target.classList.add('show', 'open');
+  			cardClicked.classList.add('show', 'open');
   			setTimeout(function () {
   				openedCards.classList.remove('show', 'open');
   				openedCards.addEventListener('click', clicked);
